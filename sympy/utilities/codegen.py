@@ -939,9 +939,14 @@ class CCodeGen(CodeGen):
             t = result.get_datatype('c')
             if isinstance(result.expr, (MatrixBase, MatrixExpr)):
                 dims = result.expr.shape
+                size = 1
+                for d in dims:
+                    size *= d
                 if dims[1] != 1:
-                    raise CodeGenError("Only column vectors are supported in local variabels. Local result {} has dimensions {}".format(result, dims))
-                code_lines.append("{0} {1}[{2}];\n".format(t, str(assign_to), dims[0]))
+                    # TODO FIXME XXX: Morten Olsen Lysgaard: Removed this check because it does not allow 2D local variables which work perfectly fine in the code generation.
+                    pass
+                    #raise CodeGenError("Only column vectors are supported in local variabels. Local result {} has dimensions {}".format(result, dims))
+                code_lines.append("{0} {1}[{2}];\n".format(t, str(assign_to), size))
                 prefix = ""
             else:
                 prefix = "const {0} ".format(t)
